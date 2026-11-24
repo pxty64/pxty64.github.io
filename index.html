@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@pxty64 // notes.txt</title>
+  <meta name="description" content="Portfolio de @pxty64: game debugging, ingeniería inversa y parches para emuladores." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header completamente transparente -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#top" class="brand">@pxty64</a>
+
+      <nav class="nav" aria-label="Navegación">
+        <a href="#about">[perfil]</a>
+        <a href="#repos">[github]</a>
+        <a href="#contact">[links]</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <button id="openTerminalBtn" class="raw-btn green" type="button" title="Abrir consola (tecla `)">[&gt;_ sh]</button>
+        <button id="menuToggle" class="raw-btn menu-toggle" type="button" aria-label="Menú" aria-expanded="false">[=]</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="notebook">
+    <!-- Cabecera -->
+    <section class="block hero">
+      <p class="meta-line" id="ghStatusLine"># file: /home/pxty64/notes.txt | github: conectando...</p>
+      <h1 class="title">@pxty64<span class="cursor">_</span></h1>
+      <p class="lead">
+        game debugger · ingeniería inversa · parches para emuladores.
+      </p>
+
+      <div class="cmd-links">
+        <a href="https://x.com/pxty64" target="_blank" rel="noopener noreferrer" class="raw-btn green">[x.com/pxty64]</a>
+        <a href="https://github.com/pxty64" target="_blank" rel="noopener noreferrer" class="raw-btn">[github.com/pxty64]</a>
+        <button id="copyHandleBtn" class="raw-btn" type="button">[copiar @pxty64]</button>
+      </div>
+    </section>
+
+    <hr class="ascii-hr" />
+
+    <!-- 01. Perfil -->
+    <section id="about" class="block">
+      <h2 class="sec-title">## 01. perfil</h2>
+      <p id="aboutBio">
+        debugging de videojuegos, análisis de memoria y binarios, y desarrollo de parches para emuladores.
+      </p>
+      <div class="gh-meta" id="ghProfileMeta">
+        <span>user: <strong class="green">pxty64</strong></span>
+        <span>repos: <strong id="ghRepoCount">-</strong></span>
+        <span>followers: <strong id="ghFollowers">-</strong></span>
+      </div>
+    </section>
+
+    <hr class="ascii-hr" />
+
+    <!-- 02. Repositorios y archivos reales desde GitHub API -->
+    <section id="repos" class="block">
+      <div class="sec-row">
+        <h2 class="sec-title">## 02. github // repositorios &amp; archivos</h2>
+        <button id="refreshGhBtn" class="raw-btn dim" type="button">[recargar api]</button>
+      </div>
+
+      <div id="langFilterRow" class="filter-row" hidden></div>
+
+      <div id="reposContainer" class="projects-list" aria-live="polite">
+        <p class="dim">cargando repositorios desde api.github.com/users/pxty64/repos ...</p>
+      </div>
+    </section>
+
+    <hr class="ascii-hr" />
+
+    <!-- 03. Links reales -->
+    <section id="contact" class="block">
+      <h2 class="sec-title">## 03. links</h2>
+      <ul class="plain-list">
+        <li><span class="green">x / twitter :</span> <a class="link" href="https://x.com/pxty64" target="_blank" rel="noopener noreferrer">https://x.com/pxty64</a></li>
+        <li><span class="green">github      :</span> <a class="link" href="https://github.com/pxty64" target="_blank" rel="noopener noreferrer">https://github.com/pxty64</a></li>
+        <li><span class="green">handle      :</span> @pxty64</li>
+      </ul>
+    </section>
+
+    <footer class="footer">
+      <span>-- EOF // <span id="year"></span> @pxty64 --</span>
+      <span class="dim">pulsa ` para consola</span>
+    </footer>
+  </main>
+
+  <!-- Explorador de archivos del repositorio -->
+  <div id="repoModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-backdrop" data-close="modal"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span id="modalMeta">ls /</span>
+        <button class="raw-btn" type="button" data-close="modal">[x]</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title-row">
+          <h3 id="modalTitle"></h3>
+          <a id="modalGhLink" class="raw-btn green" href="#" target="_blank" rel="noopener noreferrer">[abrir en github]</a>
+        </div>
+        <p id="modalDesc" class="dim"></p>
+        <div class="path-bar">
+          <span id="currentPath" class="green">/</span>
+          <button id="pathUpBtn" class="raw-btn" type="button" hidden>[.. subir]</button>
+        </div>
+        <div id="repoFilesList" class="files-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Consola interactiva -->
+  <div id="terminalOverlay" class="modal" hidden role="dialog" aria-modal="true" aria-label="Consola de @pxty64">
+    <div class="modal-backdrop" data-close="terminal"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>pxty64@blackbook:~$ (escribe "help")</span>
+        <button class="raw-btn" type="button" data-close="terminal">[x]</button>
+      </div>
+      <div id="terminalOutput" class="term-out"></div>
+      <form id="terminalForm" class="term-form" autocomplete="off">
+        <span class="green">&gt;</span>
+        <input id="terminalInput" type="text" placeholder="help | whoami | links | repos | ls <repo> | clear" aria-label="Comando" />
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

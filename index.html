@@ -5,19 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@pxty64 // notes.txt</title>
   <meta name="description" content="Portfolio de @pxty64: game debugging, ingeniería inversa y parches para emuladores." />
+  <meta name="theme-color" content="#39ff14" />
+  <link rel="icon" href="assets/avatar.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Header completamente transparente -->
+  <!-- Fondo: malla de ondas neón animada (mismo estilo que el banner) -->
+  <canvas id="waveBg" aria-hidden="true"></canvas>
+  <div class="crt" aria-hidden="true"></div>
+
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="#top" class="brand">@pxty64</a>
+      <a href="#top" class="brand"><img src="assets/avatar.jpg" alt="" class="brand-ico" />@pxty64</a>
 
       <nav class="nav" aria-label="Navegación">
         <a href="#about">[perfil]</a>
+        <a href="#backdoor">[backdoor]</a>
         <a href="#repos">[github]</a>
         <a href="#contact">[links]</a>
       </nav>
@@ -30,18 +36,34 @@
   </header>
 
   <main id="top" class="notebook">
-    <!-- Cabecera -->
+    <!-- Cabecera estilo perfil: banner + avatar -->
     <section class="block hero">
       <p class="meta-line" id="ghStatusLine"># file: /home/pxty64/notes.txt | github: conectando...</p>
-      <h1 class="title">@pxty64<span class="cursor">_</span></h1>
+      <div class="banner">
+        <img src="assets/banner.jpg" alt="" />
+        <span class="banner-tag">~/pxty64/banner.jpg</span>
+      </div>
+
+      <div class="hero-row">
+        <div class="avatar-ring">
+          <img src="assets/avatar.jpg" alt="Avatar de pxty64" class="avatar" />
+          <span class="status-dot" title="do not disturb"></span>
+        </div>
+        <div class="hero-id">
+          <h1 class="title glitch" data-text="pxty64">pxty64<span class="cursor">_</span></h1>
+          <p class="handle-line"><span class="green">p0etty</span> <span class="dim">•</span> pxty64</p>
+        </div>
+      </div>
+
       <p class="lead">
-        game debugger · ingeniería inversa · parches para emuladores.
+        <span class="green">&gt;</span> <span id="typeLine">game debugger · ingeniería inversa · parches para emuladores.</span>
       </p>
 
       <div class="cmd-links">
+        <a href="https://discord.gg/SqtcpaCXgV" target="_blank" rel="noopener noreferrer" class="raw-btn neon-btn">[unirse a backdoor]</a>
         <a href="https://x.com/pxty64" target="_blank" rel="noopener noreferrer" class="raw-btn green">[x.com/pxty64]</a>
         <a href="https://github.com/pxty64" target="_blank" rel="noopener noreferrer" class="raw-btn">[github.com/pxty64]</a>
-        <button id="copyHandleBtn" class="raw-btn" type="button">[copiar @pxty64]</button>
+        <button id="copyDiscordBtn" class="raw-btn" type="button">[copiar discord: p0etty]</button>
       </div>
     </section>
 
@@ -55,6 +77,7 @@
       </p>
       <div class="gh-meta" id="ghProfileMeta">
         <span>user: <strong class="green">pxty64</strong></span>
+        <span>discord: <strong class="green">p0etty</strong></span>
         <span>repos: <strong id="ghRepoCount">-</strong></span>
         <span>followers: <strong id="ghFollowers">-</strong></span>
       </div>
@@ -62,10 +85,30 @@
 
     <hr class="ascii-hr" />
 
-    <!-- 02. Repositorios y archivos reales desde GitHub API -->
+    <!-- 02. Comunidad backdoor -->
+    <section id="backdoor" class="block">
+      <h2 class="sec-title">## 02. backdoor // comunidad</h2>
+      <a class="invite-card" href="https://discord.gg/SqtcpaCXgV" target="_blank" rel="noopener noreferrer">
+        <div class="invite-bg" aria-hidden="true"></div>
+        <div class="invite-body">
+          <span class="invite-ico" aria-hidden="true">&gt;_</span>
+          <div class="invite-txt">
+            <strong>backdoor</strong>
+            <span class="dim">servidor de discord · pruebas de debug, obf, reversing y más</span>
+          </div>
+          <span class="invite-join">[ join ]</span>
+        </div>
+        <pre class="invite-log" aria-hidden="true">$ ./backdoor --debug --obf --re
+[ok] discord.gg/SqtcpaCXgV</pre>
+      </a>
+    </section>
+
+    <hr class="ascii-hr" />
+
+    <!-- 03. Repositorios -->
     <section id="repos" class="block">
       <div class="sec-row">
-        <h2 class="sec-title">## 02. github // repositorios &amp; archivos</h2>
+        <h2 class="sec-title">## 03. github // repositorios &amp; archivos</h2>
         <button id="refreshGhBtn" class="raw-btn dim" type="button">[recargar api]</button>
       </div>
 
@@ -78,13 +121,15 @@
 
     <hr class="ascii-hr" />
 
-    <!-- 03. Links reales -->
+    <!-- 04. Links -->
     <section id="contact" class="block">
-      <h2 class="sec-title">## 03. links</h2>
+      <h2 class="sec-title">## 04. links</h2>
       <ul class="plain-list">
+        <li><span class="green">backdoor    :</span> <a class="link" href="https://discord.gg/SqtcpaCXgV" target="_blank" rel="noopener noreferrer">https://discord.gg/SqtcpaCXgV</a></li>
+        <li><span class="green">discord     :</span> p0etty</li>
         <li><span class="green">x / twitter :</span> <a class="link" href="https://x.com/pxty64" target="_blank" rel="noopener noreferrer">https://x.com/pxty64</a></li>
         <li><span class="green">github      :</span> <a class="link" href="https://github.com/pxty64" target="_blank" rel="noopener noreferrer">https://github.com/pxty64</a></li>
-        <li><span class="green">handle      :</span> @pxty64</li>
+        <li><span class="green">mail        :</span> <a class="link" href="mailto:pxty64@tuta.io">pxty64@tuta.io</a></li>
       </ul>
     </section>
 
@@ -128,7 +173,7 @@
       <div id="terminalOutput" class="term-out"></div>
       <form id="terminalForm" class="term-form" autocomplete="off">
         <span class="green">&gt;</span>
-        <input id="terminalInput" type="text" placeholder="help | whoami | links | repos | ls <repo> | clear" aria-label="Comando" />
+        <input id="terminalInput" type="text" placeholder="help | whoami | discord | links | repos | ls <repo> | clear" aria-label="Comando" />
       </form>
     </div>
   </div>

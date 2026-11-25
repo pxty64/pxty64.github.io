@@ -1,5 +1,7 @@
 const GITHUB_USER = 'pxty64';
 const X_URL = 'https://x.com/pxty64';
+const DISCORD_USER = 'p0etty';
+const DISCORD_INVITE = 'https://discord.gg/SqtcpaCXgV';
 
 let cachedProfile = null;
 let cachedRepos = [];
@@ -293,7 +295,7 @@ terminalForm.addEventListener('submit', async (e) => {
   }
 
   if (lower === 'help') {
-    termPrint(['comandos: whoami | links | repos | ls <repo> | clear']);
+    termPrint(['comandos: whoami | discord | backdoor | links | repos | ls <repo> | clear']);
     return;
   }
 
@@ -307,9 +309,23 @@ terminalForm.addEventListener('submit', async (e) => {
 
   if (lower === 'links') {
     termPrint([
-      `x      : ${X_URL}`,
-      `github : https://github.com/${GITHUB_USER}`
+      `backdoor : ${DISCORD_INVITE}`,
+      `discord  : ${DISCORD_USER}`,
+      `x        : ${X_URL}`,
+      `github   : https://github.com/${GITHUB_USER}`,
+      'mail     : pxty64@tuta.io'
     ]);
+    return;
+  }
+
+  if (lower === 'discord') {
+    termPrint([`discord: ${DISCORD_USER}`, `comunidad backdoor: ${DISCORD_INVITE}`], 'green');
+    return;
+  }
+
+  if (lower === 'backdoor') {
+    termPrint(['abriendo backdoor // debug · obf · reversing ...'], 'green');
+    window.open(DISCORD_INVITE, '_blank', 'noopener');
     return;
   }
 
@@ -345,12 +361,12 @@ refreshGhBtn.addEventListener('click', () => {
   toast('consultando github api...');
 });
 
-document.getElementById('copyHandleBtn').addEventListener('click', async () => {
+document.getElementById('copyDiscordBtn').addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText('@pxty64');
-    toast('@pxty64 copiado');
+    await navigator.clipboard.writeText(DISCORD_USER);
+    toast(`discord "${DISCORD_USER}" copiado`);
   } catch {
-    toast('@pxty64');
+    toast(`discord: ${DISCORD_USER}`);
   }
 });
 
@@ -380,3 +396,85 @@ navEl.querySelectorAll('a').forEach((a) => {
 
 document.getElementById('year').textContent = new Date().getFullYear();
 loadGitHubData();
+
+// Fondo: malla wireframe ondulada en verde neón (mismo rollo que el banner)
+(function waveGrid() {
+  const canvas = document.getElementById('waveBg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w = 0, h = 0, dpr = 1, t = 0;
+  let mx = 0.5, my = 0.5;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function point(x, y) {
+    // desplazamiento tipo tela: dos ondas cruzadas + reacción al ratón
+    const nx = x / w, ny = y / h;
+    const dx = nx - mx, dy = ny - my;
+    const bump = Math.exp(-(dx * dx + dy * dy) * 14) * 30;
+    const off = Math.sin(nx * 5 + t * 0.9) * 26 + Math.cos(ny * 4 - t * 0.7 + nx * 3) * 20 - bump;
+    return [x + Math.sin(ny * 3 + t * 0.5) * 18, y + off];
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const step = Math.max(34, Math.min(w, h) / 22);
+    ctx.lineWidth = 1;
+
+    for (let y = -step * 2; y < h + step * 2; y += step) {
+      ctx.beginPath();
+      for (let x = -step; x <= w + step; x += step / 2) {
+        const [px, py] = point(x, y);
+        x === -step ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      const a = 0.10 + 0.12 * Math.abs(Math.sin(y / h * 3 + t * 0.6));
+      ctx.strokeStyle = `rgba(57,255,20,${a})`;
+      ctx.stroke();
+    }
+
+    for (let x = -step; x < w + step; x += step) {
+      ctx.beginPath();
+      for (let y = -step * 2; y <= h + step * 2; y += step / 2) {
+        const [px, py] = point(x, y);
+        y === -step * 2 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.strokeStyle = 'rgba(57,255,20,0.09)';
+      ctx.stroke();
+    }
+
+    // hilos de luz brillantes como en el banner
+    ctx.save();
+    ctx.shadowColor = '#39ff14';
+    ctx.shadowBlur = 18;
+    for (let k = 0; k < 2; k++) {
+      ctx.beginPath();
+      const base = h * (0.3 + k * 0.38);
+      for (let x = -20; x <= w + 20; x += 10) {
+        const y = base + Math.sin(x / w * 6 + t * (0.8 + k * 0.3) + k * 2) * h * 0.08;
+        x === -20 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(120,255,90,0.35)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    if (!reduce) {
+      t += 0.012;
+      requestAnimationFrame(draw);
+    }
+  }
+
+  window.addEventListener('resize', () => { resize(); if (reduce) draw(); });
+  window.addEventListener('pointermove', (e) => { mx = e.clientX / w; my = e.clientY / h; });
+  resize();
+  draw();
+})();

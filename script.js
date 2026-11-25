@@ -478,3 +478,21 @@ loadGitHubData();
   resize();
   draw();
 })();
+
+// Navegación sin #hash en la URL: la dirección se queda en pxty64.github.io
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href').slice(1);
+    const target = id === 'top' ? document.body : document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    if (id === 'top') window.scrollTo({ top: 0, behavior: 'smooth' });
+    else target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+if (location.hash) {
+  const el = document.getElementById(location.hash.slice(1));
+  history.replaceState(null, '', location.pathname + location.search);
+  if (el) setTimeout(() => el.scrollIntoView({ block: 'start' }), 50);
+}

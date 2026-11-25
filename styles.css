@@ -643,3 +643,5 @@ p { margin: 0 0 12px; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+section[id] { scroll-margin-top: 60px; }

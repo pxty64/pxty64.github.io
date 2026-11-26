@@ -2,6 +2,21 @@ const GITHUB_USER = 'pxty64';
 const X_URL = 'https://x.com/pxty64';
 const DISCORD_USER = 'p0etty';
 const DISCORD_INVITE = 'https://discord.gg/SqtcpaCXgV';
+const SILEXIA_URL = 'https://silexia.studio';
+
+const FEATURED_PRIVATE_REPOS = [
+  {
+    name: 'granthegatas',
+    private: true,
+    language: 'Rust',
+    description:
+      'Runtime pxty64fix (Xbox Series S 4 GB VRAM, sombras Wave32, cámara con ratón, HUD compacto) + Launcher Silexia Studio con perfiles y guardados por usuario.',
+    html_url: 'https://silexia.studio',
+    stargazers_count: '-',
+    forks_count: '-',
+    updated_at: '2026-11-26T15:20:00Z',
+  },
+];
 
 let cachedProfile = null;
 let cachedRepos = [];
@@ -72,10 +87,11 @@ async function loadGitHubData() {
     }
 
     cachedProfile = await profileRes.json();
-    cachedRepos = await reposRes.json();
+    const publicRepos = await reposRes.json();
+    cachedRepos = [...FEATURED_PRIVATE_REPOS, ...publicRepos];
 
-    ghStatusLine.textContent = `# file: /home/${GITHUB_USER}/notes.txt | github: ok (${cachedProfile.public_repos} repos) | x.com/pxty64`;
-    ghRepoCount.textContent = String(cachedProfile.public_repos ?? 0);
+    ghStatusLine.textContent = `# file: /home/${GITHUB_USER}/notes.txt | github: ok (${cachedProfile.public_repos} pub + ${FEATURED_PRIVATE_REPOS.length} priv) | silexia.studio`;
+    ghRepoCount.textContent = `${cachedProfile.public_repos ?? 0} (+${FEATURED_PRIVATE_REPOS.length} priv)`;
     ghFollowers.textContent = String(cachedProfile.followers ?? 0);
 
     if (cachedProfile.bio) {
@@ -152,26 +168,38 @@ function renderRepos(langFilter = 'all') {
 
     const lang = repo.language || 'sin lenguaje';
     const desc = repo.description || 'sin descripción en github.';
+    const privacyTag = repo.private ? '<span class="project-arch" style="border-color:#ff50a4;color:#ff8aa8">PRIVADO</span> ' : '';
+    const actionLabel = repo.private ? '<span class="green">[ver en silexia.studio]</span>' : '<span class="green">[ver archivos]</span>';
 
     el.innerHTML = `
       <div class="project-head">
         <h3>${repo.name}</h3>
-        <span class="project-arch">${lang}</span>
+        <div>${privacyTag}<span class="project-arch">${lang}</span></div>
       </div>
       <p>${desc}</p>
       <div class="repo-meta">
-        <span>stars: ${repo.stargazers_count}</span>
-        <span>forks: ${repo.forks_count}</span>
+        <span>${repo.private ? 'acceso: privado' : `stars: ${repo.stargazers_count}`}</span>
+        <span>${repo.private ? 'web: silexia.studio' : `forks: ${repo.forks_count}`}</span>
         <span>actualizado: ${formatDate(repo.updated_at)}</span>
-        <span class="green">[ver archivos]</span>
+        ${actionLabel}
       </div>
     `;
 
-    el.addEventListener('click', () => openRepoExplorer(repo));
+    el.addEventListener('click', () => {
+      if (repo.private) {
+        window.open(SILEXIA_URL, '_blank', 'noopener,noreferrer');
+      } else {
+        openRepoExplorer(repo);
+      }
+    });
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        openRepoExplorer(repo);
+        if (repo.private) {
+          window.open(SILEXIA_URL, '_blank', 'noopener,noreferrer');
+        } else {
+          openRepoExplorer(repo);
+        }
       }
     });
 
